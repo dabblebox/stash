@@ -1,0 +1,10 @@
+# library
+go build .
+
+version=0.0.0-local
+
+ldflags="-X main.version=${version}"
+
+# cli
+cd cli
+go build -o ../stash -ldflags "${ldflags}" && mv -f ../stash /usr/local/bin/stash
