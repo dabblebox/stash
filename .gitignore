@@ -1,0 +1,21 @@
+# exe
+/stash
+/cli/cmd/stash_test
+
+# config
+*.env
+*.json
+*.cert
+*.sql
+*.js
+*.pub
+id_rsa
+
+# catalog
+stash.yml
+
+# terraform
+.terraform
+*.tf
+*.tfstate*
+*.tfvars

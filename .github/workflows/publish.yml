@@ -1,0 +1,33 @@
+name: BuildNDeploy
+on:
+  push:
+    tags:
+    - 'v[0-9]+.[0-9]+.[0-9]+-[a-zA-Z0-9]*'
+    - 'v[0-9]+.[0-9]+.[0-9]+'
+jobs:
+ 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+
+    - name: Check out Code
+      uses: actions/checkout@v2
+     
+    - name: Set Version
+      run: echo ::set-env name=version::${GITHUB_REF##*v}
+
+    - name: Build and Publish Release
+      uses: ./.github/shell
+      env:
+        GOROOT: /usr/local/go
+      with: 
+        args: |
+          cd cli
+          gox -os='darwin' -os='linux' -os='windows' -ldflags '-X main.version=${{ env.version }}.${{ github.run_number }}' -output 'artifacts/stash_{{.OS}}_{{.Arch}}'
+          ghr -t '${{ secrets.GITHUB_TOKEN }}' -u dabblebox -r stash -c $GITHUB_SHA -delete ${GITHUB_REF##*/} artifacts
+        

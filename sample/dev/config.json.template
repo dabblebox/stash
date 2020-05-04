@@ -1,0 +1,10 @@
+{
+    "db": {
+        "user": "kwazii",
+        "password": "octonauts",
+        "conn": "mongodb://${USER}:${PASSWORD}@mongodb.com:27017"
+    },
+    "apiKey": "999999999999999999999",
+    "apiUrl": "https://api.slick.com/v1",
+    "debug": false
+}
