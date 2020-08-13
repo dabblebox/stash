@@ -2,6 +2,7 @@ package terraform
 
 import (
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -49,10 +50,17 @@ func CreateTFVarsFile(filePath, userName string) error {
 	}
 	defer f.Close()
 
-	if err := tmpl.Execute(f, vars.HCLVarsModel{
-		Users: []string{userName},
-		Roles: []string{},
-	}); err != nil {
+	m := vars.HCLVarsModel{}
+
+	const userPrefix = "user/"
+
+	if strings.Contains(userName, userPrefix) {
+		m.IAMUsers = []string{strings.TrimPrefix(userName, userPrefix)}
+	} else {
+		m.SAMLUsers = []string{userName}
+	}
+
+	if err := tmpl.Execute(f, m); err != nil {
 		return err
 	}
 
