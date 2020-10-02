@@ -23,6 +23,8 @@ import (
 	"github.com/dabblebox/stash/component/format"
 	"github.com/dabblebox/stash/component/output"
 	awskms "github.com/dabblebox/stash/component/service/aws/kms"
+	"github.com/dabblebox/stash/component/service/aws/policy"
+	"github.com/dabblebox/stash/component/service/aws/role"
 	"github.com/dabblebox/stash/component/service/aws/sm"
 	"github.com/dabblebox/stash/component/service/aws/terraform"
 	"github.com/dabblebox/stash/component/service/aws/user"
@@ -325,7 +327,6 @@ func (s *SecretsManagerService) Download(file File, format string) (File, error)
 
 	m := map[string]value{}
 	for _, remoteKey := range file.Keys {
-
 		o, err := svc.GetSecretValue(&secretsmanager.GetSecretValueInput{
 			SecretId:     aws.String(remoteKey),
 			VersionStage: aws.String("AWSCURRENT"),
@@ -333,9 +334,9 @@ func (s *SecretsManagerService) Download(file File, format string) (File, error)
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case secretsmanager.ErrCodeResourceNotFoundException:
-				return file, err
+				return file, fmt.Errorf("%s: %s", remoteKey, err)
 			default:
-				return file, err
+				return file, fmt.Errorf("%s: %s", remoteKey, err)
 			}
 		}
 
@@ -398,14 +399,39 @@ func (s SecretsManagerService) terraform(m map[string]value, file File, io IO) (
 	w := bufio.NewWriter(&hcl)
 
 	arnsMap := map[string]string{}
+	arns := []string{}
 
 	for _, value := range m {
 		key := format.TerraformResourceName(filepath.Base(value.ARN))
 
 		arnsMap[key] = value.ARN
+		arns = append(arns, value.ARN)
 	}
 
-	tmpl, err := template.New("sm").Funcs(template.FuncMap{"notLast": sm.NotLast}).Parse(sm.HCLTemplate)
+	p, err := json.MarshalIndent(policy.New(policy.Statement{
+		Effect:   "Allow",
+		Action:   []string{"secretsmanager:GetSecretValue"},
+		Resource: &arns,
+	}), "", "    ")
+	if err != nil {
+		return []byte{}, err
+	}
+
+	tmpl, err := template.New("role").Parse(role.HCLTemplate)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	if err := tmpl.Execute(w, role.HCLModel{
+		Name:   format.TerraformResourceName(filepath.Base(file.RemoteKey)),
+		Policy: string(p),
+	}); err != nil {
+		return []byte{}, err
+	}
+
+	w.WriteString("\n\n")
+
+	tmpl, err = template.New("sm").Funcs(template.FuncMap{"notLast": sm.NotLast}).Parse(sm.HCLTemplate)
 	if err != nil {
 		return []byte{}, err
 	}
