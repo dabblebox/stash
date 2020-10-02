@@ -75,7 +75,7 @@ $ stash sync .*\\.env$ .*\\.json$
 |-|-|-|-|-|
 |--file|-f| slickapp.yml |stash.yml|catalog path with file name|
 |--context|-c| slickapp |parent folder|prefix for cloud service keys|
-|--service|-s| secrets-manager, paramter-store, s3 ||cloud service|
+|--service|-s| secrets-manager, parameter-store, s3 ||cloud service|
 |--tags|-t| config,dev,app|file path and name|file reference tags|
 
 </details>
@@ -112,7 +112,7 @@ $ stash edit -t config,dev
 |Flag|Short|Example|Description|
 |-|-|-|-|
 |--file|-f| stash.yml|catalog path with file name|
-|--service|-s| secrets-manager, paramter-store, s3 |cloud service|
+|--service|-s| secrets-manager, parameter-store, s3 |cloud service|
 |--tags|-t| config,dev,app|file reference tags|
 
 </details>
@@ -158,7 +158,7 @@ $ eval $( stash get -t dev -o terminal-export )
 |Flag|Short|Example|Description|
 |-|-|-|-|
 |--file|-f| stash.yml|catalog path with file name|
-|--service|-s| secrets-manager, paramter-store, s3 |cloud service|
+|--service|-s| secrets-manager, parameter-store, s3 |cloud service|
 |--tags|-t| config,dev,app|file reference tags|
 |--output|-o| terminal-export|configuration output|
 
@@ -205,7 +205,7 @@ $ stash purge -s s3
 |Flag|Short|Example|Description|
 |-|-|-|-|
 |--file|-f| stash.yml|catalog path with file name|
-|--service|-s| secrets-manager, paramter-store, s3 |cloud service|
+|--service|-s| secrets-manager, parameter-store, s3 |cloud service|
 |--tags|-t| config,dev,app|file reference tags|
 |--warn|-s|false|skips warning prompts|
 
@@ -238,7 +238,7 @@ $ stash clean -s s3
 |Flag|Short|Example|Description|
 |-|-|-|-|
 |--file|-f| stash.yml|catalog path with file name|
-|--service|-s| secrets-manager, paramter-store, s3 |cloud service|
+|--service|-s| secrets-manager, parameter-store, s3 |cloud service|
 |--tags|-t| config,dev,app|file reference tags|
 
 </details>
@@ -272,7 +272,7 @@ $ stash list -s s3
 |Flag|Short|Example|Description|
 |-|-|-|-|
 |--file|-f| stash.yml|catalog path with file name|
-|--service|-s| secrets-manager, paramter-store, s3 |cloud service|
+|--service|-s| secrets-manager, parameter-store, s3 |cloud service|
 |--tags|-t| config,dev,app|file reference tags|
 
 </details>
@@ -310,7 +310,7 @@ $ stash tag -s s3 -a config
 |Flag|Short|Example|Description|
 |-|-|-|-|
 |--file|-f| stash.yml|catalog path with file name|
-|--service|-s| secrets-manager, paramter-store, s3 |cloud service|
+|--service|-s| secrets-manager, parameter-store, s3 |cloud service|
 |--tags|-t| config,dev,app|file reference tags|
 |--add|-a|app,non-prod|add tags|
 |--delete|-d|app,non-prod|delete tags|
@@ -346,7 +346,7 @@ $ stash inject config.json -s secrets-manager
 
 |Flag|Short|Example|Description|
 |-|-|-|-|
-|--service|-s| secrets-manager, paramter-store, s3 |cloud service|
+|--service|-s| secrets-manager, parameter-store, s3 |cloud service|
 |--output|-o| terminal-export|file output format|
 
 </details>
