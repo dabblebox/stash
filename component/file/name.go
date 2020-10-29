@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -27,4 +28,10 @@ func Number(file string) string {
 	}
 
 	return fmt.Sprintf("%s/%s%s", dir, name, ext)
+}
+
+func DashIt(path string) string {
+	re := regexp.MustCompile(`[^a-zA-Z0-9-]`)
+
+	return re.ReplaceAllString(path, "-")
 }

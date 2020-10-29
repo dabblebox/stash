@@ -4,7 +4,7 @@ type HCLModel struct {
 	Arns map[string]string
 }
 
-var HCLTemplate = `# By default, secrets can be altered by other users with power user access. Use the 
+var HCLSecretsTemplate = `# By default, secrets can be altered by other users with power user access. Use the 
 # import commands to take control of each secret's policy. After applying the Terraform, 
 # the secrets will be locked down to only specified users and roles and encrypted with
 # a KMS key that is locked down also. 
@@ -20,8 +20,9 @@ resource "aws_secretsmanager_secret" "secret_{{ $i }}" {
 	
 	policy = data.template_file.sm_policy.rendered
 }
-{{end}}
+{{end}}`
 
+var HCLPolicyTemplate = `
 data "template_file" "sm_policy" {
 	template = <<EOF
 {
@@ -45,9 +46,7 @@ data "template_file" "sm_policy" {
 				"secretsmanager:UpdateSecret",
 				"secretsmanager:UpdateSecretVersionStage"
 			],
-			"Resource": [
-			{{$notLast := notLast .Arns}}{{range $i, $e := .Arns}}   "{{ $e }}"{{if call $notLast}},{{end}}
-			{{end}}],
+			"Resource": ["*"],
 			"Condition": {
 				"StringNotLike": {
 					"aws:userId": $${writePrincipals}
@@ -66,9 +65,7 @@ data "template_file" "sm_policy" {
 				"secretsmanager:GetRandomPassword",
 				"secretsmanager:GetSecretValue"
 			],
-			"Resource": [
-			{{$notLast := notLast .Arns}}{{range $i, $e := .Arns}}   "{{ $e }}"{{if call $notLast}},{{end}}
-			{{end}}],
+			"Resource": ["*"],
 			"Condition": {
 				"StringNotLike": {
 					"aws:userId": $${readPrincipals}
@@ -93,9 +90,7 @@ data "template_file" "sm_policy" {
 				"secretsmanager:UpdateSecret",
 				"secretsmanager:UpdateSecretVersionStage"
 			],
-			"Resource": [
-			{{$notLast := notLast .Arns}}{{range $i, $e := .Arns}}   "{{ $e }}"{{if call $notLast}},{{end}}
-			{{end}}],
+			"Resource": ["*"],
 			"Condition": {
 				"StringLike": {
 					"aws:userId": $${writePrincipals}
@@ -114,9 +109,7 @@ data "template_file" "sm_policy" {
 				"secretsmanager:GetRandomPassword",
 				"secretsmanager:GetSecretValue"
 			],
-			"Resource": [
-			{{$notLast := notLast .Arns}}{{range $i, $e := .Arns}}   "{{ $e }}"{{if call $notLast}},{{end}}
-			{{end}}],
+			"Resource": ["*"],
 			"Condition": {
 				"StringLike": {
 					"aws:userId": $${readPrincipals}

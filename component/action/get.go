@@ -139,7 +139,7 @@ func formatFileDownloadText(context, outputType, path, remoteKey, service string
 	case output.TypeFile:
 		loc = path
 	case output.TypeTerraform:
-		loc = file.Number(fmt.Sprintf("%s/%s.tf", filepath.Dir(path), service))
+		loc = fmt.Sprintf("%s/%s-%s.tf", filepath.Dir(path), service, file.DashIt(filepath.Base(path)))
 	default:
 		loc = "output"
 	}

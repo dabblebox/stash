@@ -356,6 +356,13 @@ func (s *SecretsManagerService) Download(file File, format string) (File, error)
 			return file, err
 		}
 
+		filePath = fmt.Sprintf("%s/%s-policy.tf", dir, s.Key())
+		printFile(filePath, s.io.Stderr)
+
+		if err := terraform.EnsureTFSMPolicyFile(filePath); err != nil {
+			return file, err
+		}
+
 		filePath = fmt.Sprintf("%s/%s.variables.tf", dir, s.Key())
 		printFile(filePath, s.io.Stderr)
 
@@ -423,7 +430,7 @@ func (s SecretsManagerService) terraform(m map[string]value, file File, io IO) (
 	}
 
 	if err := tmpl.Execute(w, role.HCLModel{
-		Name:   format.TerraformResourceName(filepath.Base(file.RemoteKey)),
+		Name:   format.TerraformResourceName(file.RemoteKey),
 		Policy: string(p),
 	}); err != nil {
 		return []byte{}, err
@@ -431,7 +438,7 @@ func (s SecretsManagerService) terraform(m map[string]value, file File, io IO) (
 
 	w.WriteString("\n\n")
 
-	tmpl, err = template.New("sm").Funcs(template.FuncMap{"notLast": sm.NotLast}).Parse(sm.HCLTemplate)
+	tmpl, err = template.New("sm").Funcs(template.FuncMap{"notLast": sm.NotLast}).Parse(sm.HCLSecretsTemplate)
 	if err != nil {
 		return []byte{}, err
 	}

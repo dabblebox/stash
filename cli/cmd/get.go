@@ -87,8 +87,8 @@ Outputs:
 					m.Fatal(err)
 				}
 			case output.TypeTerraform:
-				tfFilePath := fmt.Sprintf("%s/%s.tf", filepath.Dir(df.Path), df.Service)
-				if err := file.Write(file.Number(tfFilePath), df.Data); err != nil {
+				tfFilePath := fmt.Sprintf("%s/%s-%s.tf", filepath.Dir(df.Path), df.Service, file.DashIt(filepath.Base(df.Path)))
+				if err := file.Write(tfFilePath, df.Data); err != nil {
 					m.Fatal(err)
 				}
 			default:
