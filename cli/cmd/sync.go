@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/dabblebox/stash/component/action"
@@ -65,6 +66,8 @@ $ stash sync config/dev/.env
 			}); err != nil {
 			m.Fatal(err)
 		}
+
+		fmt.Fprintf(os.Stderr, "Remember to modify infrastructure when applicable.\n\n")
 	},
 }
 
