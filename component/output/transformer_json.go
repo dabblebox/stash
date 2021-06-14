@@ -23,7 +23,7 @@ func (t JSONTransformer) Transform(data []byte) ([]byte, error) {
 		return []byte{}, fmt.Errorf("transformer does not support %s files", t.fileType)
 	}
 
-	params, err := dotenv.Parse(bytes.NewReader(data), true)
+	params, err := dotenv.Parse(bytes.NewReader(data))
 	if err != nil {
 		return data, err
 	}

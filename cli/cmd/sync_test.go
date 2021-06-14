@@ -54,7 +54,7 @@ LOG=true`)
 		os.Remove(inputFile)
 	}()
 
-	input, err := dotenv.Parse(bytes.NewReader(d), false)
+	input, err := dotenv.Parse(bytes.NewReader(d))
 	if err != nil {
 		t.Error(err)
 	}
@@ -102,7 +102,7 @@ LOG=true`)
 	}
 	defer f.Close()
 
-	results, err := dotenv.Parse(f, false)
+	results, err := dotenv.Parse(f)
 	if err != nil {
 		t.Error(err)
 	}
@@ -136,7 +136,7 @@ LOG=true`)
 		os.Remove(inputFile)
 	}()
 
-	input, err := dotenv.Parse(bytes.NewReader(d), false)
+	input, err := dotenv.Parse(bytes.NewReader(d))
 	if err != nil {
 		t.Error(err)
 	}
@@ -183,7 +183,7 @@ LOG=true`)
 	}
 	defer f.Close()
 
-	results, err := dotenv.Parse(f, false)
+	results, err := dotenv.Parse(f)
 	if err != nil {
 		t.Error(err)
 	}
@@ -217,7 +217,7 @@ LOG=true`)
 		os.Remove(inputFile)
 	}()
 
-	input, err := dotenv.Parse(bytes.NewReader(d), false)
+	input, err := dotenv.Parse(bytes.NewReader(d))
 	if err != nil {
 		t.Error(err)
 	}
@@ -265,7 +265,7 @@ LOG=true`)
 	}
 	defer f.Close()
 
-	results, err := dotenv.Parse(f, false)
+	results, err := dotenv.Parse(f)
 	if err != nil {
 		t.Error(err)
 	}

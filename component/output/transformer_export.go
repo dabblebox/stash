@@ -17,7 +17,7 @@ func (t ExportTransformer) Transform(data []byte) ([]byte, error) {
 		return []byte{}, fmt.Errorf("transformer does not support %s files", t.fileType)
 	}
 
-	params, err := dotenv.Parse(bytes.NewReader(data), false)
+	params, err := dotenv.Parse(bytes.NewReader(data))
 	if err != nil {
 		return data, err
 	}

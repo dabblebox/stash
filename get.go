@@ -83,7 +83,7 @@ func GetMap(opt GetOptions) (map[string]string, error) {
 
 	m := map[string]string{}
 	for _, d := range downloads {
-		tm, err := dotenv.Parse(bytes.NewReader(d.Data), false)
+		tm, err := dotenv.Parse(bytes.NewReader(d.Data))
 		if err != nil {
 			return m, err
 		}

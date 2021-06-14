@@ -696,7 +696,7 @@ func toMap(f *File) (map[string]string, error) {
 	switch f.Type {
 	case file.TypeEnv:
 		if v, ok := f.Options[SMSecretsOption]; !ok || v == SMSecretsSingle {
-			props, err := f.parseENV(false)
+			props, err := f.parseENV()
 			if err != nil {
 				return map[string]string{}, err
 			}
@@ -730,7 +730,7 @@ func toMap(f *File) (map[string]string, error) {
 }
 
 func envToMap(f *File, delimiter string) (map[string]string, error) {
-	props, err := f.parseENV(false)
+	props, err := f.parseENV()
 	if err != nil {
 		return map[string]string{}, err
 	}

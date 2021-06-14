@@ -30,6 +30,6 @@ func (f *File) parseJSON() (map[string]string, error) {
 	return m, nil
 }
 
-func (f *File) parseENV(expandVariables bool) (map[string]string, error) {
-	return dotenv.Parse(bytes.NewReader(f.Data), expandVariables)
+func (f *File) parseENV() (map[string]string, error) {
+	return dotenv.Parse(bytes.NewReader(f.Data))
 }

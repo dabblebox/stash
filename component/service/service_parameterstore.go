@@ -99,7 +99,7 @@ func (s ParameterStoreService) Sync(file File) (File, error) {
 	params := map[string]string{}
 
 	if len(file.Data) > 0 {
-		p, err := dotenv.Parse(bytes.NewReader(file.Data), false)
+		p, err := dotenv.Parse(bytes.NewReader(file.Data))
 		if err != nil {
 			return file, fmt.Errorf("file invalid: %s", err)
 		}

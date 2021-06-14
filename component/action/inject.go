@@ -95,7 +95,7 @@ func Inject(opt InjectOpt, dep Dep) ([]DownloadedFile, error) {
 			m := map[string]string{}
 
 			if len(remoteKey.Field) > 0 {
-				params, err := dotenv.Parse(bytes.NewReader(result.Data), false)
+				params, err := dotenv.Parse(bytes.NewReader(result.Data))
 				if err != nil {
 					return injected, err
 				}
