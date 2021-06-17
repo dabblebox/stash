@@ -23,7 +23,7 @@ func (t TaskDefEnvTransformer) Transform(data []byte) ([]byte, error) {
 		Value string `json:"value"`
 	}
 
-	pairs, err := dotenv.Parse(bytes.NewReader(data), true)
+	pairs, err := dotenv.Parse(bytes.NewReader(data))
 	if err != nil {
 		return data, err
 	}
