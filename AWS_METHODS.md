@@ -32,7 +32,7 @@ $ stash get -t dev -o terraform
 
 On start up containers can call a storage service directly using the *Stash* CLI and create a configuration file inside the container allowing the application to load it into memory.
 
-**Requirement**: The stash.yml file used to sync the configuration must included in the Docker image where *Stash* can find it.
+**Requirement**: The stash.yml file used to sync the configuration must be included in the Docker image where *Stash* can find it.
 
 Dockerfile (build)
 ```bash
@@ -66,7 +66,11 @@ exec ./app
 
 ### Method 2: File Injection (Stash CLI)
 
+**Supports**: ECS Fargate Containers
+
 On start up containers can call a storage service directly using the *Stash* CLI and inject secrets into a configuration file inside the container allowing the application to load the file containing the secrets into memory. Secret tokens can be added to a configuration file that is checked into a repository. 
+
+**Requirement**: The stash.yml file used to sync the configuration must be included in the Docker image where *Stash* can find it.
 
 The tokens are AWS Secret Manager secret names. Use double colons, `::`, to specify any field in the secret's json object.
 
@@ -105,7 +109,7 @@ stash inject $CONFIG_ENV/.env -l -s secrets-manager 1> secrets.env
 exec ./app
 ```
 
-### Method 3: Environment Injection (AWS)
+### Method 3: Environment Injection (Stash CLI)
 
 **Supports**: ECS Fargate Containers
 
@@ -148,3 +152,93 @@ for k, v := range config {
   log.Printf("%s=%s\n", k, v)
 }
 ```
+
+### Method 5: Direct Ingest (Stash CLI)
+
+**Supports**: ECS Fargate Containers / Lambda Functions
+
+CI/CD (install stash)
+```bash
+$ curl -L -o ./stash https://github.com/dabblebox/stash/releases/download/v0.3.0-rc/stash_linux_amd64
+$ chmod +x ./stash
+```
+
+CI/CD (zip stash) - *lambda only*
+```
+$ zip -g lambda.zip stash.yml
+$ zip -g lambda.zip ./stash
+```
+
+Code (get config)
+<details>
+  <summary>NodeJS</summary>
+
+```javascript
+const { exec } = require('child_process')
+​
+async function getConfig() {
+  try {
+    let result = await new Promise((resolve, reject) => {
+      execCommand = `stash get -t ${process.env['CONFIG_ENV']} -t ${process.env['VERSION_TAG']} -o json`
+      console.log(execCommand)
+      exec(execCommand, (error, stdout, stderr) => {
+        if (error) {
+          console.log(`error: ${error.message}`)
+          reject(error)
+        }
+        if (stderr) {
+          console.log(`stash result: ${stderr}`)
+        }
+        if (!stdout) {
+          reject(stderr)
+        }
+        resolve(stdout)
+      })
+    })
+​
+    return JSON.parse(result)
+  } catch (err) {
+    console.error(`Failed to get config`)
+    throw err
+  }
+}
+```
+</details>
+
+<details>
+  <summary>C# .NET</summary>
+
+</details>
+
+<details>
+  <summary>Python</summary>
+
+```python
+import subprocess
+import json
+import shlex
+import os
+vals = {}
+keys = [
+        "KEYS_HERE",
+]
+def init():
+    cmd = "./stash get -t '{}' -o json".format(os.environ['stash_tags'])
+    args = shlex.split(cmd)
+    try:
+        output = subprocess.check_output(
+                args,
+                stderr=subprocess.STDOUT,
+                encoding='UTF-8',
+        )
+    except subprocess.CalledProcessError as e:
+        print(e.output,e.returncode,cmd)
+        raise(e)
+    secrets = json.loads(output.split('downloaded')[1])
+    for key in keys:
+        v = secrets.get(key, None)
+        if v is None:
+            raise Exception('{} not found in secrets'.format(key))
+        vals[key] = v
+```
+</details>
