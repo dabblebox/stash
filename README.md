@@ -174,7 +174,8 @@ Using the `--output` or `-o` flag, the stashed configuration can be downloaded, 
 |ecs-task-inject-env|*|*|.env|stdout|AWS ECS task definition [secrets](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html) / [envfile](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/taskdef-envfiles.html) (ENV) (key/arn)|
 |ecs-task-env|.env|.env|.env|stdout|AWS ECS task definition [environment](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecs-taskdefinition-containerdefinitions.html#cfn-ecs-taskdefinition-containerdefinition-environment) (JSON) (key/value)|
 |json|.env|.env|.env|stdout|JSON object|
-|terminal-export|.env|.env|.env|stdout|prepend "export " to each key/value pair|
+|terminal-export-literal|.env|.env|.env|stdout|prepend "export " to each key/value pair (single quotes)|
+|terminal-export|.env|.env|.env|stdout|prepend "export " to each key/value pair (double quotes)|
 
 </details>
 

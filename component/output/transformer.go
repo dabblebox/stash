@@ -7,6 +7,7 @@ const (
 	TypeECSTaskInjectEnv  = "ecs-task-inject-env"
 	TypeJSONObject        = "json"
 	TypeExport            = "terminal-export"
+	TypeExportLiteral     = "terminal-export-literal"
 	TypeOriginal          = "original"
 	TypeFile              = "file"
 )
@@ -16,7 +17,7 @@ type ITransformer interface {
 }
 
 // GetTransformer ...
-func GetTransformer(output string, fileType string) (ITransformer, error) {
+func GetTransformer(output, fileType string) (ITransformer, error) {
 
 	switch output {
 	case TypeJSONObject:
@@ -26,6 +27,12 @@ func GetTransformer(output string, fileType string) (ITransformer, error) {
 	case TypeExport:
 		return ExportTransformer{
 			fileType: fileType,
+			literal: false,
+		}, nil
+	case TypeExportLiteral:
+		return ExportTransformer{
+			fileType: fileType,
+			literal: true,
 		}, nil
 	case TypeECSTaskEnv:
 		return TaskDefEnvTransformer{

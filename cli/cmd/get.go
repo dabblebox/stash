@@ -45,13 +45,14 @@ Examples:
   stash get config/dev/.env -o file 
 
 Outputs:
-  file                  file    system	original file
-  terraform             file    system	terraform scripts
-  ecs-task-inject-json  stdout  AWS ECS task definition secrets / envfile (JSON) (key/arn)
-  ecs-task-inject-env   stdout  AWS ECS task definition secrets / envfile (ENV) (key/arn)
-  ecs-task-env          stdout  AWS ECS task definition environment (JSON) (key/value)
-  json                  stdout  JSON object
-  terminal-export       stdout  prepend "export " to each key/value pair
+  file                  	file    system	original file
+  terraform             	file    system	terraform scripts
+  ecs-task-inject-json  	stdout  AWS ECS task definition secrets / envfile (JSON) (key/arn)
+  ecs-task-inject-env   	stdout  AWS ECS task definition secrets / envfile (ENV) (key/arn)
+  ecs-task-env          	stdout  AWS ECS task definition environment (JSON) (key/value)
+  json                  	stdout  JSON object
+  terminal-export       	stdout  prepend "export " to each key/value pair (double quotes)
+  terminal-export-literal   stdout  prepend "export " to each key/value pair (single quotes)
 `,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		viper.BindPFlags(cmd.Flags())
@@ -66,7 +67,7 @@ Outputs:
 		opts.Service = viper.GetString("service")
 		opts.Tags = viper.GetStringSlice("tags")
 		opts.Output = viper.GetString("output")
-
+		
 		downloaded, err := action.Get(opts, action.Dep{
 			Monitor: &m,
 			Stderr:  os.Stderr,
