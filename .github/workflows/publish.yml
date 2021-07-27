@@ -19,7 +19,7 @@ jobs:
       uses: actions/checkout@v2
      
     - name: Set Version
-      run: echo ::set-env name=version::${GITHUB_REF##*v}
+      run: echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
     - name: Build and Publish Release
       uses: ./.github/shell
@@ -29,5 +29,5 @@ jobs:
         args: |
           cd cli
           gox -os='darwin' -os='linux' -os='windows' -ldflags '-X main.version=${{ env.version }}.${{ github.run_number }}' -output 'artifacts/stash_{{.OS}}_{{.Arch}}'
-          ghr -t '${{ secrets.GITHUB_TOKEN }}' -u dabblebox -r stash -c $GITHUB_SHA -delete ${GITHUB_REF##*/} artifacts
+          ghr -t '${{ secrets.GITHUB_TOKEN }}' -u dabblebox -r stash -c $GITHUB_SHA -delete '${{ env.version }}' artifacts
         
